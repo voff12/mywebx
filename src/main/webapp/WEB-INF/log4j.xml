@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<param name="Threshold" value="DEBUG" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%p %d{yy/MM/dd HH:mm:ss} %-50.50c - %m%n" />
+		</layout>
+	</appender>
+	<appender name="ROLLING"
+		class="org.apache.log4j.RollingFileAppender">
+		<param name="File"
+			value="F:/f/logs/tags/my.log" />
+		<param name="MaxFileSize" value="512KB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%p %d{yy/MM/dd HH:mm:ss} %-50.50c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="PAGE_ERROR_ROLLING"
+		class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File"
+			value="F:/f/logs/tags/myerror.log" />
+		<param name="Encoding" value="GBK" />
+		<param name="ImmediateFlush" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d{yy/MM/dd HH:mm:ss} - %m%n" />
+		</layout>
+	</appender>
+	
+		<appender name="myframework"
+		class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File"
+			value="F:/f/logs/tags/myframework.log" />
+		<param name="Encoding" value="GBK" />
+		<param name="ImmediateFlush" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d{yy/MM/dd HH:mm:ss} - %m%n" />
+		</layout>
+	</appender>
+
+
+
+	<!-- CX add 
+	<appender name="SUBJECT_DAILY"
+		class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File"
+			value="/backup/twitter-logs/twitter_subject.log" />
+		<param name="Encoding" value="GBK" />
+		<param name="ImmediateFlush" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d{yy/MM/dd HH:mm:ss} - %m%n" />
+		</layout>
+	</appender>
+	 end -->
+
+	<logger name="com.voff">
+		<level value="INFO" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="ROLLING" />
+	</logger>
+	<logger name="org.springframework">
+		<level value="INFO" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="ROLLING" />
+	</logger>
+	<logger name="org.hibernate">
+		<level value="INFO" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="ROLLING" />
+	</logger>
+	<!-- 这个要自己定义？ -->
+	<logger name="Page_Errors">
+		<level value="ERROR" />
+		<appender-ref ref="PAGE_ERROR_ROLLING" />
+		<appender-ref ref="ROLLING" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	
+	<logger name="MYFRAMEWORK">
+		<level value="INFO" />
+		<appender-ref ref="myframework" />
+	</logger>
+	<root>
+		<priority value="ERROR" />
+	</root>
+</log4j:configuration>
