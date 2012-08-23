@@ -1,32 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-  <!-- 
-<bean id="hello" class="com.voff.domain.App"></bean>
-
-<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-    <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-    <property name="url" value="jdbc:mysql://localhost/myweek?useUnicode=true&amp;characterEncoding=UTF-8"/>
-    <property name="username" value="root"/>
-    <property name="password" value=""/>
-  </bean>
-
-  <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-    <property name="configLocation" value="sqlmap-config.xml"/>
-    <property name="dataSource" ref="dataSource"/>
-  </bean>
-
-  <bean id="appDao" class="com.voff.dao.impl.AppDaoImpl">
-    <property name="sqlMapClient" ref="sqlMapClient"/>
-  </bean>
   
-   <bean id="blogDAO" class="com.voff.dao.impl.DefaultBlogDAOImpl">
-    <property name="sqlMapClient" ref="sqlMapClient"/>
-  </bean>
 
-  <bean id="propertyConfigure" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
-     <property name="locations" value="classpath:jdbc.properties">
-     </property>
-  </bean>
-   -->
 </beans>
