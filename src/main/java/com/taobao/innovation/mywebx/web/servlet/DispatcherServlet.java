@@ -181,8 +181,7 @@ public class DispatcherServlet extends MyFrameworkServlet {
 			logger.info("判断是mutipart上传...");
 			return checkPart.resolveMultipart(request);
 		}
-		logger.info("不是mutipart上传...");
-		return request;
+    		return request;
 	}
 
 	/**
@@ -211,7 +210,7 @@ public class DispatcherServlet extends MyFrameworkServlet {
 			String key = (String) iter.next();
 			String value = (String) hashTable.get(key);
 			try {
-				Object pullUtilObj = Class.forName(value).newInstance();
+				Object pullUtilObj = Class.forName(value).   newInstance();
 				currentHashMap.put(key, pullUtilObj);
 				logger.info("pullUtilObj chen is " + pullUtilObj);
 			} catch (Exception e) {
@@ -310,17 +309,28 @@ public class DispatcherServlet extends MyFrameworkServlet {
 			logger.info("getTemplateView = " + view);
 		}
 		Map<Object, Object> map = context.getMap();
-
+        org.apache.velocity.Template template = null;
 		try {
-			org.apache.velocity.Template template = velocityEngine
-					.getTemplate(view);
-			VelocityContext context1 = new VelocityContext(map);
-			// 这里要layout布局 rails on ruby样子
-			template.merge(context1, rundata.getHttpServletResponse()
-					.getWriter());
-		} catch (ResourceNotFoundException e) {
-			// 不同的抱错，我都能找到不同的确页面上
-			throw new NoTemplateFindException(e);
+			template = velocityEngine.getTemplate(view);
+        } catch (ResourceNotFoundException e) {
+            // 不同的抱错，我都能找到不同的确页面上
+            try {
+                // 如果vm没有找到，则可以去尝试加载一下.html的代码, 主要是为了支持html静态页面 // FIXME later
+                view = StringUtil.getTemplateView(servletPath) + ".html";
+                template = velocityEngine.getTemplate(view);
+            }  catch (Exception e1) {
+                throw new NoTemplateFindException(e);
+            }
+
+        } catch (Exception e) {
+            throw new NoTemplateFindException(e);
+        }
+
+        try {
+                VelocityContext context1 = new VelocityContext(map);
+                // 这里要layout布局 rails on ruby样子
+                template.merge(context1, rundata.getHttpServletResponse()
+                .getWriter());
 		} catch (ParseErrorException e) {
 			throw new NoTemplateFindException(e);
 		} catch (Exception e) {
