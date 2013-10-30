@@ -1,0 +1,36 @@
+# Package Files #
+*.class
+target
+build
+*.jar
+*.war
+*.ear
+
+*.log
+
+# Mac OS #
+.DS_Store
+
+# Windows #
+Thumbs.db
+*.com
+
+# eclipse #
+.project
+.classpath
+/.settings/
+.settings/
+
+# Intellij IDEA #
+*.iws
+*.iml
+*.ipr
+*.idea
+/.idea/
+
+# HSF jetty plugin #
+/hsf.configuration/
+hsf.configuration/
+/LOG_HOME_IS_UNDEFINED/
+LOG_HOME_IS_UNDEFINED/
+hsf*

@@ -6,7 +6,7 @@
 	<groupId>com.taobao.innovation</groupId>
 	<artifactId>mywebx</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>mywebx</name>
 
 	<dependencies>
