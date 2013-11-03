@@ -44,7 +44,7 @@ public class MySessionFilter implements Filter {
         servletRequest.setAttribute(getClass().getName(), true);
         MySessionServletRequest myRequest = new MySessionServletRequest((HttpServletRequest) servletRequest);
         MySessionServletResponse myResponse = new MySessionServletResponse((HttpServletResponse) servletResponse);
-        session = new MySession(myRequest, myResponse, filterConfig.getServletContext(), sessionStoreMap);
+        session = new MySession(myRequest, myResponse, filterConfig.getServletContext(), sessionStoreMap, domain);
         session.init();
         myRequest.setSession(session);
         myResponse.setSession(session);
