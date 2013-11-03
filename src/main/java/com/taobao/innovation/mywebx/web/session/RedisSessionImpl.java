@@ -11,6 +11,10 @@ package com.taobao.innovation.mywebx.web.session;
  */
 public class RedisSessionImpl implements SessionStore{
 
+    public void init() {
+
+    }
+
     @Override
     public void setAttribute(String key, Object value) {
 

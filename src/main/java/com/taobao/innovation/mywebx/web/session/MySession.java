@@ -4,6 +4,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.ObjectUtils;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 import java.util.Enumeration;
@@ -11,37 +13,40 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * sesson有几个问题要考虑：
  * 1）分布式的应用，确保不同应用，能够取得同一个sessionId
+ * 实现分布式应用获取到同一个sessionId的方式就是通过cookie来获取
  * 2) 再基于同一个sessionId从集中式的key,value中获取，从而实现分布式的session
- *
+ * <p/>
  * Ruby on rails提供了几种策略，一种session on cookie,session on file
- *
+ * <p/>
  * User: voff12
  * Date: 13-11-2
  * Time: 下午8:46
  */
-public class MySession implements HttpSession{
+public class MySession implements HttpSession {
 
-    private static final String SESSIONID= "sessionId";
+    public static final String SESSIONID = "sessionId";
+    public static final String COOKIE_SESSION = "cookie";
+    public static final String CENTER_SESSION = "center";
 
     private volatile MySessionServletRequest request;
-    private volatile  MySessionServletResponse response;
+    private volatile MySessionServletResponse response;
     private String sessionId;
     private long creationTime;
     private volatile int maxInactiveInterval = 1800;
     private volatile ServletContext context;
-    private SessionStore sessionStore;
+    private Map<String, SessionStore> sessionStoreMap ;
     private Map<String, Object> attributes = new HashMap<String, Object>();
 
 
-    public MySession(MySessionServletRequest request, MySessionServletResponse response, ServletContext context) {
+    public MySession(MySessionServletRequest request, MySessionServletResponse response, ServletContext context,Map<String, SessionStore> sessionStoreMap) {
 
         this.creationTime = System.currentTimeMillis();
         this.request = request;
         this.response = response;
         this.context = context;
+        this.sessionStoreMap = sessionStoreMap;
     }
 
 
@@ -51,7 +56,7 @@ public class MySession implements HttpSession{
         if (sessionId == null) {
             // 同一个域名下才能简化操作
             sessionId = DigestUtils.md5Hex(UniqId.getInstance().getUniqId());
-            setAttribute(SESSIONID,sessionId);
+            setAttribute(SESSIONID, sessionId);
         }
     }
 
@@ -93,7 +98,13 @@ public class MySession implements HttpSession{
 
     @Override
     public Object getAttribute(String s) {
-        HashMap<String, Object> result = (HashMap<String, Object>) sessionStore.getAttribute(sessionId);
+        if (SESSIONID.equals(s)) {
+            SessionStore cookieStore = new CookieSessionImpl(this);
+            return cookieStore.getAttribute(s);
+        }
+
+        SessionStore centerStore = this.sessionStoreMap.get(CENTER_SESSION); // 集中式的session存储
+        HashMap<String, Object> result = (HashMap<String, Object>) centerStore.getAttribute(sessionId);
         return result.get(s);
     }
 
@@ -114,8 +125,14 @@ public class MySession implements HttpSession{
 
     @Override
     public void setAttribute(String s, Object o) {
-        attributes.put(s,o);
-        sessionStore.setAttribute(sessionId, attributes);
+        if (SESSIONID.equals(s)) {
+            SessionStore cookieStore = new CookieSessionImpl(this);
+            cookieStore.setAttribute(s, o);
+            return;
+        }
+        attributes.put(s, o);
+        SessionStore centerStore = this.sessionStoreMap.get(CENTER_SESSION); // 集中式的session存储
+        centerStore.setAttribute(sessionId, attributes);
     }
 
     @Override
@@ -139,5 +156,15 @@ public class MySession implements HttpSession{
     @Override
     public boolean isNew() {
         return true;
+    }
+
+
+    public HttpServletRequest getRequest() {
+        return this.request;
+    }
+
+
+    public HttpServletResponse getResponse() {
+        return this.response;
     }
 }
