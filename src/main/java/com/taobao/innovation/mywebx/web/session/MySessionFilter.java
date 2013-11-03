@@ -23,8 +23,9 @@ public class MySessionFilter implements Filter {
         this.filterConfig = filterConfig;
         // 这里只会初始化一次
         sessionStoreMap = new HashMap<String, SessionStore>();
+        ip = filterConfig.getInitParameter("ip");
         // 初始化一下redis
-        SessionStore store = new RedisSessionImpl(ip);
+        SessionStore store = new RedisSessionImpl(ip,0); // FIXME later
         sessionStoreMap.put(MySession.CENTER_SESSION, store);
     }
 
@@ -32,7 +33,8 @@ public class MySessionFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         MySession session = null;
 
-        if (servletRequest.getAttribute(getClass().getName()) != null) {
+        if (!(servletRequest instanceof HttpServletRequest && servletResponse instanceof HttpServletResponse)
+         || servletRequest.getAttribute(getClass().getName()) != null) {
             filterChain.doFilter(servletRequest,servletResponse);
             return;
         }
@@ -44,6 +46,8 @@ public class MySessionFilter implements Filter {
         session.init();
         myRequest.setSession(session);
         myResponse.setSession(session);
+
+        filterChain.doFilter(myRequest,myResponse); // continue?
     }
 
     @Override
