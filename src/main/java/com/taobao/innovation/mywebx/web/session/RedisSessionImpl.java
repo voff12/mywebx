@@ -15,14 +15,17 @@ public class RedisSessionImpl implements SessionStore {
 
     private Jedis jedis;
     private String ip;
+    private int port;
 
-    public RedisSessionImpl(String ip) {
+
+    public RedisSessionImpl(String ip, int port) {
         this.ip = ip;
+        this.port = port;
         init();
     }
 
     public void init() {
-        jedis = new Jedis(ip);
+        jedis = new Jedis(ip,6379);
     }
 
     /**
