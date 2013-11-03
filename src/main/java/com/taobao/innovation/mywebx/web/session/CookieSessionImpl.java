@@ -44,5 +44,7 @@ public class CookieSessionImpl implements SessionStore{
             }
         }
 
+        return null;
+
     }
 }
