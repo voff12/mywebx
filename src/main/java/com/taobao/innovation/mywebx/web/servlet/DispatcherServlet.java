@@ -97,8 +97,8 @@ public class DispatcherServlet extends MyFrameworkServlet {
 	/**
 	 * 最终处理
 	 * 
-	 * @param request
-	 * @param response
+	 * @param request  请求
+	 * @param response   响应
 	 * @throws Exception
 	 */
 	protected void doDispatch(HttpServletRequest request,
