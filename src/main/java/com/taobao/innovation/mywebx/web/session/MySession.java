@@ -29,7 +29,6 @@ import java.util.Map;
 public class MySession implements HttpSession {
 
     public static final String SESSIONID = "sessionId";
-    public static final String COOKIE_SESSION = "cookie";
     public static final String CENTER_SESSION = "center";
 
     private volatile MySessionServletRequest request;
@@ -108,7 +107,7 @@ public class MySession implements HttpSession {
         SessionStore centerStore = this.sessionStoreMap.get(CENTER_SESSION); // 集中式的session存储
         String json = (String) centerStore.getAttribute(sessionId);
         HashMap<String, Object> result = (HashMap<String, Object>) this.toObject(json);
-        return result.get(s);
+        return result == null ? null : result.get(s);
     }
 
     @Override
