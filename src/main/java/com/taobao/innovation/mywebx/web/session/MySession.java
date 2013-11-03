@@ -1,5 +1,7 @@
 package com.taobao.innovation.mywebx.web.session;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.ObjectUtils;
 
@@ -36,11 +38,11 @@ public class MySession implements HttpSession {
     private long creationTime;
     private volatile int maxInactiveInterval = 1800;
     private volatile ServletContext context;
-    private Map<String, SessionStore> sessionStoreMap ;
+    private Map<String, SessionStore> sessionStoreMap;
     private Map<String, Object> attributes = new HashMap<String, Object>();
 
 
-    public MySession(MySessionServletRequest request, MySessionServletResponse response, ServletContext context,Map<String, SessionStore> sessionStoreMap) {
+    public MySession(MySessionServletRequest request, MySessionServletResponse response, ServletContext context, Map<String, SessionStore> sessionStoreMap) {
 
         this.creationTime = System.currentTimeMillis();
         this.request = request;
@@ -104,7 +106,8 @@ public class MySession implements HttpSession {
         }
 
         SessionStore centerStore = this.sessionStoreMap.get(CENTER_SESSION); // 集中式的session存储
-        HashMap<String, Object> result = (HashMap<String, Object>) centerStore.getAttribute(sessionId);
+        String json = (String) centerStore.getAttribute(sessionId);
+        HashMap<String, Object> result = (HashMap<String, Object>) this.toObject(json);
         return result.get(s);
     }
 
@@ -132,7 +135,24 @@ public class MySession implements HttpSession {
         }
         attributes.put(s, o);
         SessionStore centerStore = this.sessionStoreMap.get(CENTER_SESSION); // 集中式的session存储
-        centerStore.setAttribute(sessionId, attributes);
+        centerStore.setAttribute(sessionId, toJsonString(attributes));
+    }
+
+
+    public static void main(String[] args) {
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("nick", "voff12");
+        System.out.println(toJsonString(attributes));
+        System.out.println(toObject(toJsonString(attributes)));
+    }
+
+    private static String toJsonString(Map<String, Object> attributes) {
+        return new GsonBuilder().create().toJson(attributes);
+    }
+
+
+    private static Map<String, Object> toObject(String json) {
+        return new GsonBuilder().create().fromJson(json, Map.class);
     }
 
     @Override
