@@ -38,16 +38,18 @@ public class MySession implements HttpSession {
     private volatile int maxInactiveInterval = 1800;
     private volatile ServletContext context;
     private Map<String, SessionStore> sessionStoreMap;
+    private String domain;
     private Map<String, Object> attributes = new HashMap<String, Object>();
 
 
-    public MySession(MySessionServletRequest request, MySessionServletResponse response, ServletContext context, Map<String, SessionStore> sessionStoreMap) {
+    public MySession(MySessionServletRequest request, MySessionServletResponse response, ServletContext context, Map<String, SessionStore> sessionStoreMap, String domain) {
 
         this.creationTime = System.currentTimeMillis();
         this.request = request;
         this.response = response;
         this.context = context;
         this.sessionStoreMap = sessionStoreMap;
+        this.domain = domain;
     }
 
 
@@ -100,7 +102,7 @@ public class MySession implements HttpSession {
     @Override
     public Object getAttribute(String s) {
         if (SESSIONID.equals(s)) {
-            SessionStore cookieStore = new CookieSessionImpl(this);
+            SessionStore cookieStore = new CookieSessionImpl(this, domain);
             return cookieStore.getAttribute(s);
         }
 
@@ -128,7 +130,7 @@ public class MySession implements HttpSession {
     @Override
     public void setAttribute(String s, Object o) {
         if (SESSIONID.equals(s)) {
-            SessionStore cookieStore = new CookieSessionImpl(this);
+            SessionStore cookieStore = new CookieSessionImpl(this, domain);
             cookieStore.setAttribute(s, o);
             return;
         }

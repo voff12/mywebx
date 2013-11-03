@@ -17,9 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 public class CookieSessionImpl implements SessionStore{
 
     private MySession mySession;
+    private String domain;
 
-    public CookieSessionImpl(MySession session) {
+    public CookieSessionImpl(MySession session, String domain) {
         this.mySession = session;
+        this.domain = domain;
     }
 
 
@@ -28,6 +30,7 @@ public class CookieSessionImpl implements SessionStore{
         HttpServletResponse response = mySession.getResponse();
         Cookie cookie = new Cookie(key,null);
         cookie.setMaxAge(-1);  // 浏览器里进程有效
+        cookie.setDomain(domain);
         cookie.setValue(value.toString());   // 先最简单的处理
         response.addCookie(cookie);
 

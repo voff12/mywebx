@@ -16,6 +16,7 @@ public class MySessionFilter implements Filter {
 
     private FilterConfig filterConfig;
     private String ip;
+    private String domain;
     private Map<String, SessionStore> sessionStoreMap;
 
     @Override
@@ -25,6 +26,7 @@ public class MySessionFilter implements Filter {
         sessionStoreMap = new HashMap<String, SessionStore>();
         ip = filterConfig.getInitParameter("ip");
         // 初始化一下redis
+        domain = filterConfig.getInitParameter("domain");
         SessionStore store = new RedisSessionImpl(ip,0); // FIXME later
         sessionStoreMap.put(MySession.CENTER_SESSION, store);
     }
