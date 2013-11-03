@@ -15,6 +15,7 @@ import java.util.Map;
 public class MySessionFilter implements Filter {
 
     private FilterConfig filterConfig;
+    private String ip;
     private Map<String, SessionStore> sessionStoreMap;
 
     @Override
@@ -23,7 +24,8 @@ public class MySessionFilter implements Filter {
         // 这里只会初始化一次
         sessionStoreMap = new HashMap<String, SessionStore>();
         // 初始化一下redis
-        sessionStoreMap.put(MySession.CENTER_SESSION, null);
+        SessionStore store = new RedisSessionImpl(ip);
+        sessionStoreMap.put(MySession.CENTER_SESSION, store);
     }
 
     @Override
