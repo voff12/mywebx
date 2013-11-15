@@ -15,6 +15,6 @@ public class MysqlSessionImpl  implements SessionStore{
 
     @Override
     public Object getAttribute(String key) {
-
+        return null;
     }
 }
